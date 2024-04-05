@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using AutoMapper;
 using courses_dotnet_api.Src.DTOs;
 using courses_dotnet_api.Src.Interfaces;
@@ -81,6 +83,29 @@ public class StudentRepository : IStudentRepository
 
         _dataContext.Students.Remove(student);
 
+        return true;
+    }
+
+    public async Task<bool> VerifyPassword(string password, string email)
+    {
+        Student? student = await _dataContext.Students.FirstOrDefaultAsync(s => s.Email == email);
+
+        if(student is null)
+            return false;
+        
+        byte[] storedHash = student.PasswordHash;
+        byte[] salt = student.PasswordSalt;
+
+        using (var hmac = new HMACSHA512(salt))
+        {
+            byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            for(int i = 0; i < computedHash.Length; i++)
+            {
+                if (computedHash[i] != storedHash[i])
+                    return false;
+            }
+        }
         return true;
     }
 }

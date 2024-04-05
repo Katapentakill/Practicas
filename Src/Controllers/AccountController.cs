@@ -50,4 +50,23 @@ public class AccountController : BaseApiController
 
         return TypedResults.Ok(accountDto);
     }
+    [HttpPost("login")]
+    public async Task<IResult> Login(LoginStudentDto loginStudentDto)
+    {
+        StudentDto? student = await _studentRepository.GetStudentByEmailAsync(
+            loginStudentDto.Email
+        );
+
+        if (student is null)
+            return TypedResults.BadRequest("The user dont exist");
+
+        bool isPasswordValid = await _studentRepository.VerifyPassword(loginStudentDto.Password,student.Email);
+
+        if (!isPasswordValid)
+            return TypedResults.BadRequest("Password incorrect");
+        
+        string token = _tokenService.CreateToken(student.Rut); 
+        var response = new { Token = token }; 
+        return TypedResults.Ok(response);
+    }
 }

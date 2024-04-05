@@ -138,6 +138,33 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"jorge.rivera01@alumnos.ucn.cl\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/account/login",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

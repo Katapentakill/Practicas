@@ -13,4 +13,5 @@ public interface IStudentRepository
     Task<IEnumerable<StudentDto>> GetStudentsAsync();
     Task<bool> UpdateStudentByIdAsync(int id, UpdateStudentDto updateStudentDto);
     Task<bool> DeleteStudentByIdAsync(int id);
+    Task<bool> VerifyPassword(string password, string email);
 }
