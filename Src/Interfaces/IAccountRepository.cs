@@ -6,4 +6,5 @@ public interface IAccountRepository
 {
     Task<bool> SaveChangesAsync();
     Task AddAccountAsync(RegisterStudentDto registerStudentDto);
+    Task<bool> VerifyPassword(string password, string email);
 }

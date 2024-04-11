@@ -58,15 +58,23 @@ public class AccountController : BaseApiController
         );
 
         if (student is null)
-            return TypedResults.BadRequest("The user dont exist");
+            return TypedResults.BadRequest("Credentials are invalid");
 
-        bool isPasswordValid = await _studentRepository.VerifyPassword(loginStudentDto.Password,student.Email);
+        bool isPasswordValid = await _accountRepository.VerifyPassword(loginStudentDto.Password,student.Email);
 
         if (!isPasswordValid)
-            return TypedResults.BadRequest("Password incorrect");
+            return TypedResults.BadRequest("Credentials are invalid");
         
-        string token = _tokenService.CreateToken(student.Rut); 
-        var response = new { Token = token }; 
-        return TypedResults.Ok(response);
+        string token = _tokenService.CreateToken(student.Rut);
+        AccountDto accountDto =
+            new()
+            {
+                Rut = student.Rut,
+                Name = student.Name,
+                Email = loginStudentDto.Email,
+                Token = _tokenService.CreateToken(student.Rut)
+            }; 
+        
+        return TypedResults.Ok(accountDto);
     }
 }

@@ -85,27 +85,4 @@ public class StudentRepository : IStudentRepository
 
         return true;
     }
-
-    public async Task<bool> VerifyPassword(string password, string email)
-    {
-        Student? student = await _dataContext.Students.FirstOrDefaultAsync(s => s.Email == email);
-
-        if(student is null)
-            return false;
-        
-        byte[] storedHash = student.PasswordHash;
-        byte[] salt = student.PasswordSalt;
-
-        using (var hmac = new HMACSHA512(salt))
-        {
-            byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-
-            for(int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != storedHash[i])
-                    return false;
-            }
-        }
-        return true;
-    }
 }
